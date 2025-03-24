@@ -1,11 +1,138 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <title>Tableau de Bord</title>
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+        }
+
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            float: right;
+        }
+
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .statistics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .statistic-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex: 1 1 200px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .statistic-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .client-list {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+        }
+
+        .client-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .client-list li {
+            padding: 5px 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bienvenue sur le Dashboard</h1>
-    <p>Vous êtes connecté avec succès.</p>
-    <!-- Ajoutez ici le contenu de votre dashboard -->
+    <h1>Tableau de Bord</h1>
+
+    <!-- Bouton de déconnexion -->
+    <form th:action="@{/logout}" method="GET">
+        <button type="submit" class="logout-button">Déconnexion</button>
+    </form>
+
+    <div class="statistics">
+        <div class="statistic-item">
+            <p>Total des tâches: <span th:text="${dashboardData.getTotalTasks()}"></span></p>
+        </div>
+        <div class="statistic-item">
+            <p>Total des leads: <span th:text="${dashboardData.getTotalLeads()}"></span></p>
+        </div>
+        <div class="statistic-item">
+            <p>Total des projets: <span th:text="${dashboardData.getTotalProjects()}"></span></p>
+        </div>
+        <div class="statistic-item" onclick="toggleUserList()">
+            <p>Total des clients: <span th:text="${dashboardData.getTotalClients()}"></span></p>
+        </div>
+    </div>
+
+    <!-- Liste des clients (cachée par défaut) -->
+    <div id="userList" class="client-list">
+        <h3>Liste des Utilisateurs</h3>
+        <ul>
+            <li th:each="user : ${dashboardData.users}">
+                <span th:text="${user.getName()}"></span> - <span th:text="${user.getEmail()}"></span>
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <h2>Paramètres</h2>
+        <p th:text="${dashboardData.getSettings().getCompany()}"></p>
+    </div>
+
+    <div>
+        <h2>Absences aujourd'hui</h2>
+        <ul>
+            <li th:each="absence : ${dashboardData.getAbsencesToday()}">
+                <span th:text="${absence.getReason()}"></span>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // Fonction pour afficher/masquer la liste des clients
+        function toggleUserList() {
+            const userList = document.getElementById("userList");
+            if (userList.style.display === "none" || userList.style.display === "") {
+                userList.style.display = "block";
+            } else {
+                userList.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>

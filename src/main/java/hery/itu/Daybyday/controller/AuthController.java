@@ -40,9 +40,11 @@ public class AuthController {
         }
     }
 
-    // Afficher la page dashboard après une authentification réussie
-    @GetMapping("/dashboard")
-    public String showDashboardPage() {
-        return "dashboard"; // Redirige vers dashboard.html
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("token"); // Supprimer le token de la session
+        session.invalidate(); // Invalider la session
+        return "redirect:/login"; // Rediriger vers la page de login
     }
+
 }
